@@ -1,0 +1,29 @@
+version: "3.9"
+
+secrets:
+  digital_signature_pk:
+    file: "keys/public.key"
+  digital_signature_pv:
+    file: "keys/private.key"
+
+services:
+  app:
+    image: golang:1.9-alpine
+    container_name: blockchain-container
+    tty: true
+    volumes:
+      - ./..:/usr/local/blockchain
+    working_dir: /usr/local/blockchain
+    secrets:
+      - digital_signature_pk
+      - digital_signature_pv
+    environment:
+      GO11MODULE: "on"
+      DS_PK_PATH: /run/secrets/digital_signature_pk
+      DS_PV_PATH: /run/secrets/digital_signature_pv
+    networks:
+      - blockchain_net
+
+networks:
+  blockchain_net:
+    driver: bridge
